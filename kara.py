@@ -320,6 +320,12 @@ def is_level_complete():
 def draw():
     global window, canvas, objs
     
+    # clean up
+    canvas.delete("all")
+    
+    # background
+    canvas.create_rectangle(0, 0, WIDTH, HEIGHT, fill="#B4E6B4")
+    
     #grid
     cells_y = len(level)-1
     cells_x = 0
@@ -372,11 +378,31 @@ window = tkinter.Tk()
 window.title("PythonKara")
 window.geometry(str(WIDTH) + 'x' + str(HEIGHT))
 
-# window and background
+icon = tkinter.PhotoImage(file=r'images/ladybug-right.png')
+window.iconphoto(False, icon)
+
+# init window
 canvas = tkinter.Canvas(window, width=WIDTH, height=HEIGHT)
 canvas.pack()
-canvas.create_rectangle(0, 0, WIDTH, HEIGHT, fill="#B4E6B4")
 
 objs = {}
 
-draw() # initial setup
+# add key bindings
+def on_key_press(event):
+    if event.keysym == 'Up':
+        move()
+    elif event.keysym == 'Left':
+        turnLeft()
+    elif event.keysym == 'Right':
+        turnRight()
+    elif event.keysym == 'space':
+        if onLeaf():
+            removeLeaf()
+        else:
+            putLeaf()
+
+window.bind('<KeyPress>', on_key_press)
+window.focus_set()
+
+# initial setup
+draw()
